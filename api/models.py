@@ -28,6 +28,6 @@ class EmissionRecord(models.Model):
 class Tips(models.Model):
     factor = models.ForeignKey(Factor, on_delete=models.CASCADE)
     tip = models.TextField()
-
+    potential_reduction_percentage = models.FloatField()
     def __str__(self):
         return self.tip

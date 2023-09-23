@@ -1,6 +1,8 @@
 # Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from api.serializers import TipsSerializer
 from .models import Factor, EmissionRecord, Tips, Organisation
 from django.db.models import Sum
 from rest_framework import status
@@ -52,26 +54,26 @@ def get_emission_delta_tips(request, org_id, year1, year2):
                 ).aggregate(total_emission=Sum('net_emission'))['total_emission'] or 0
             )))
 
+
     tips_for_factors = Tips.objects.filter(factor__in=max_delta_factors)
-    tips_data = [{"factor": tip.factor.name, "tip": tip.tip} for tip in tips_for_factors]
+    tips_data = [
+        {
+            "factor": tip.factor.name, 
+            "tip": tip.tip,
+            "reduction_message": f"IF YOU ACT ON THIS TIP YOU WILL SEE A DECREASE OF EMISSIONS TO {emission_year2 - (emission_year2 * (tip.potential_reduction / 100))}"
+        }
+        for tip in tips_for_factors
+    ]
 
     return Response({"tips": tips_data}, status=200)
 
 
 
 @api_view(['POST'])
-def add_tip(request):
-    factor_id = request.data.get('factor_id')
-    tip_text = request.data.get('tip')
-
-    if not factor_id or not tip_text:
-        return Response({"error": "Both factor_id and tip are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        factor = Factor.objects.get(id=factor_id)
-    except Factor.DoesNotExist:
-        return Response({"error": "Factor not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    tip = Tips.objects.create(factor=factor, tip=tip_text)
-
-    return Response({"success": "Tip added successfully", "tip_id": tip.id}, status=status.HTTP_201_CREATED)
+def create_tip(request):
+    if request.method == 'POST':
+        serializer = TipsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
