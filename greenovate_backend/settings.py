@@ -86,6 +86,7 @@ DATABASES = {
         'PORT': '5432',
         'OPTIONS': {
             'sslmode': 'require',
+            'options': '-c search_path=$user,public'
         },
     }
 }
