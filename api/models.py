@@ -62,4 +62,8 @@ class Subsubfactor(models.Model):
 class Tips(models.Model):
     factor = models.ForeignKey(Factor, models.DO_NOTHING)
     tip = models.CharField(max_length=255)
+    desc_1 = models.TextField(blank=True, null=True)
+    desc_2 = models.TextField(blank=True, null=True)
+    desc_3 = models.TextField(blank=True, null=True)
+    desc_4 = models.TextField(blank=True, null=True)
     potential_reduction_percentage = models.FloatField()

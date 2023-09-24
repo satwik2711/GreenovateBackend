@@ -60,7 +60,11 @@ def get_emission_delta_tips(request, org_id, year1, year2):
         {
             "factor": tip.factor.name, 
             "tip": tip.tip,
-            "reduction_message": f"IF YOU ACT ON THIS TIP YOU WILL SEE A DECREASE OF EMISSIONS TO {emission_year2 - (emission_year2 * (tip.potential_reduction / 100))}"
+            "a": tip.desc_1,
+            "b": tip.desc_2,
+            "c": tip.desc_3,
+            "d": tip.desc_4,
+            "reduction_message": f"If you plan to implement the following suggested emission reduction stratergy, you will be able to notice your emissions level drop to {emission_year2 - (emission_year2 * (tip.potential_reduction / 100))}"
         }
         for tip in tips_for_factors
     ]
