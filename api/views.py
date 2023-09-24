@@ -3,15 +3,15 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from api.serializers import TipsSerializer
-from .models import Factor, EmissionRecord, Tips, Organisation
+from .models import Factor, Emissionrecord, Tips, Organization
 from django.db.models import Sum
 from rest_framework import status
 
 @api_view(['GET'])
 def get_emission_delta_tips(request, org_id, year1, year2):
     try:
-        organisation = Organisation.objects.get(id=org_id)
-    except Organisation.DoesNotExist:
+        organisation = Organization.objects.get(id=org_id)
+    except Organization.DoesNotExist:
         return Response({"error": "Organisation not found"}, status=404)
 
     factors = Factor.objects.all()
@@ -20,15 +20,15 @@ def get_emission_delta_tips(request, org_id, year1, year2):
 
     for factor in factors:
 
-        emission_year1 = EmissionRecord.objects.filter(
+        emission_year1 = Emissionrecord.objects.filter(
             organisation=organisation,
-            sub_sub_factor__sub_factor__factor=factor,
+            subsubfactor__sub_factor__factor=factor,
             record_year=year1
         ).aggregate(total_emission=Sum('net_emission'))['total_emission'] or 0
 
-        emission_year2 = EmissionRecord.objects.filter(
+        emission_year2 = Emissionrecord.objects.filter(
             organisation=organisation,
-            sub_sub_factor__sub_factor__factor=factor,
+            subsubfactor__sub_factor__factor=factor,
             record_year=year2
         ).aggregate(total_emission=Sum('net_emission'))['total_emission'] or 0
 
@@ -42,14 +42,14 @@ def get_emission_delta_tips(request, org_id, year1, year2):
 
         if len(max_delta_factors) > 2:
             max_delta_factors.remove(min(max_delta_factors, key=lambda f: abs(
-                EmissionRecord.objects.filter(
+                Emissionrecord.objects.filter(
                     organisation=organisation,
-                    sub_sub_factor__sub_factor__factor=f,
+                    subsubfactor__sub_factor__factor=f,
                     record_year=year2
                 ).aggregate(total_emission=Sum('net_emission'))['total_emission'] or 0 -
-                EmissionRecord.objects.filter(
+                Emissionrecord.objects.filter(
                     organisation=organisation,
-                    sub_sub_factor__sub_factor__factor=f,
+                    subsubfactor__sub_factor__factor=f,
                     record_year=year1
                 ).aggregate(total_emission=Sum('net_emission'))['total_emission'] or 0
             )))
