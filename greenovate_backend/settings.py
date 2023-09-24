@@ -84,10 +84,10 @@ DATABASES = {
         'PASSWORD': 'oSb5iU0YePHM',
         'HOST': 'ep-odd-term-22561303-pooler.us-east-1.postgres.vercel-storage.com',
         'PORT': '5432',
-        # 'OPTIONS': {
-        #     'sslmode': 'require',
-        #     'options': '-c search_path=$user,public options=endpoint%3Dep-odd-term-22561303-pooler',
-        # },
+        'OPTIONS': {
+            'sslmode': 'require',
+            'options': 'endpoint=ep-odd-term-22561303-pooler',
+        },
     }
 }
 # DATABASES = {
