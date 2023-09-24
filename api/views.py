@@ -21,13 +21,13 @@ def get_emission_delta_tips(request, org_id, year1, year2):
     for factor in factors:
 
         emission_year1 = Emissionrecord.objects.filter(
-            organisation=organisation,
+            organization=organisation,
             subsubfactor__sub_factor__factor=factor,
             record_year=year1
         ).aggregate(total_emission=Sum('net_emission'))['total_emission'] or 0
 
         emission_year2 = Emissionrecord.objects.filter(
-            organisation=organisation,
+            organization=organisation,
             subsubfactor__sub_factor__factor=factor,
             record_year=year2
         ).aggregate(total_emission=Sum('net_emission'))['total_emission'] or 0
@@ -64,7 +64,7 @@ def get_emission_delta_tips(request, org_id, year1, year2):
             "b": tip.desc_2,
             "c": tip.desc_3,
             "d": tip.desc_4,
-            "reduction_message": f"If you plan to implement the following suggested emission reduction stratergy, you will be able to notice your emissions level drop to {emission_year2 - (emission_year2 * (tip.potential_reduction / 100))}"
+            "reduction_message": f"If you plan to implement the following suggested emission reduction stratergy, you will be able to notice your emissions level drop to {emission_year2 - (emission_year2 * (tip.potential_reduction_percentage / 100))}"
         }
         for tip in tips_for_factors
     ]

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-$vhw^a@cxi!2c$@ql&+p!ft^fisy3%0$+j8+u*&pxh3143(6w-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['greenovate-backend.onrender.com']
+ALLOWED_HOSTS = ['greenovate-backend.onrender.com','127.0.0.1']
 
 
 # Application definition
